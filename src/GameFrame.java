@@ -3,12 +3,8 @@ import java.awt.*;
 
 public class GameFrame extends JFrame {
     GamePanel panel;
-
-
     GameFrame() {
-
         panel = new GamePanel();
-
         this.add(panel);
         this.setTitle("Duck Duck Buffalo");
         this.setResizable(false);
@@ -17,7 +13,6 @@ public class GameFrame extends JFrame {
         this.pack();
         this.setVisible(true);
         this.setLocationRelativeTo(null);
-
     }
 }
 

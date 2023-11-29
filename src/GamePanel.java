@@ -28,14 +28,12 @@ public class GamePanel extends JPanel implements Runnable{
     Box box;
     Paddle paddle;
     Duck duck;
-    Duck[] Ducks = new Duck[10];
-    ArrayList<Duck> Ducks2 = new ArrayList<Duck>();
+    //Duck[] Ducks = new Duck[10];
+    ArrayList<Duck> Ducks = new ArrayList<Duck>();
     Score score;
-
-
     GamePanel() {
         newPaddle();
-        makeDucks();
+        //makeDucks();
         addDucksToArray();
 
         box = new Box(GAME_WIDTH, GAME_HEIGHT);
@@ -45,22 +43,21 @@ public class GamePanel extends JPanel implements Runnable{
         this.setPreferredSize(GAME_SIZE);
         gameThread = new Thread(this);
         gameThread.start();
-
     }
     public void newPaddle() {
         paddle = new Paddle((GAME_WIDTH/2)-(PADDLE_WIDTH/2), (GAME_HEIGHT-PADDLE_HEIGHT-BOX_SIDE_LP), PADDLE_WIDTH, PADDLE_HEIGHT);
     }
-    public void makeDucks() {
-        random = new Random();
-        for(int i = 0; i < 10; i++){
-            duck = new Duck((BOX_SIDE_R-DUCK_DIAMETER + random.nextInt()), (BOX_TOP + random.nextInt()), DUCK_DIAMETER, DUCK_DIAMETER);
-            this.Ducks[i] = duck;
-        }
-    }
+  //  public void makeDucks() {
+  //      random = new Random();
+  //      for(int i = 0; i < 10; i++){
+  //          duck = new Duck((BOX_SIDE_R-DUCK_DIAMETER + random.nextInt()), (BOX_TOP + random.nextInt()), DUCK_DIAMETER, DUCK_DIAMETER);
+  //          this.Ducks = duck;
+  //      }
+  //  }
     public void addDucksToArray() {
         random = new Random();
-        duck = new Duck((BOX_SIDE_R-DUCK_DIAMETER + random.nextInt(2)), (BOX_TOP + random.nextInt(2)), DUCK_DIAMETER, DUCK_DIAMETER);
-        Ducks2.add(duck);
+        duck = new Duck(((BOX_SIDE_R+random.nextInt(2))-DUCK_DIAMETER + random.nextInt(2)), (BOX_TOP + random.nextInt(2)), DUCK_DIAMETER, DUCK_DIAMETER);
+        Ducks.add(duck);
 
     }
 
@@ -80,10 +77,10 @@ public class GamePanel extends JPanel implements Runnable{
         {
             d.draw(g);
         }
-        for (Duck d: this.Ducks2)
-        {
-            d.draw(g);
-        }
+       // for (Duck d: this.Ducks2)
+       // {
+       //     d.draw(g);
+       // }
     }
     public void move() {
         paddle.move();
@@ -92,10 +89,10 @@ public class GamePanel extends JPanel implements Runnable{
         {
             d.move();
         }
-        for (Duck d: this.Ducks2)
-        {
-            d.move();
-        }
+       // for (Duck d: this.Ducks2)
+       // {
+       //     d.move();
+       // }
     }
     public void checkCollision(Duck duck) {
         //stops duck from leaving top of screen
@@ -146,10 +143,10 @@ public class GamePanel extends JPanel implements Runnable{
                 {
                     checkCollision(duck);
                 }
-                for (Duck duck: this.Ducks2)
-                {
-                    checkCollision(duck);
-                }
+               // for (Duck duck: this.Ducks2)
+               // {
+               //     checkCollision(duck);
+               // }
                 repaint();
                 delta--;
             }

@@ -12,7 +12,6 @@ import java.awt.Graphics2D;
 public class Duck extends Rectangle {
     Random random = new Random();
     BufferedImage pic1;
-
     double xVelocity;
     double yVelocity;
     double initialSpeed = 1;
@@ -47,7 +46,6 @@ public class Duck extends Rectangle {
         }
         g.drawImage(pic1, x, y, null);
     }
-
 }
 
 
