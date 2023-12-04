@@ -1,13 +1,9 @@
 import java.awt.*;
-import java.awt.event.KeyEvent;
-import java.awt.event.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
 import javax.imageio.ImageIO;
-import javax.swing.*;
-import java.awt.Graphics2D;
 
 public class Duck extends Rectangle {
     Random random;
@@ -47,23 +43,3 @@ public class Duck extends Rectangle {
         g.drawImage(pic1, x, y, null);
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

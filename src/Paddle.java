@@ -32,28 +32,9 @@ public class Paddle extends Rectangle{
     }
     public void move() {
         x = x + xVelocity;
-
     }
     public void draw(Graphics g) {
         g.setColor(Color.blue);
         g.fillRect(x, y, width, height);
-
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

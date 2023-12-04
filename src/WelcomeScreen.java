@@ -1,14 +1,8 @@
 import java.awt.*;
-import java.awt.event.KeyEvent;
-import java.awt.event.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.util.*;
 import javax.imageio.ImageIO;
-import javax.swing.*;
-import java.util.ArrayList;
-import java.awt.event.KeyAdapter;
 
 public class WelcomeScreen extends Rectangle{
     Image image;
@@ -21,23 +15,17 @@ public class WelcomeScreen extends Rectangle{
         WelcomeScreen.SCREEN_WIDTH = SCREEN_WIDTH;
         WelcomeScreen.SCREEN_HEIGHT = SCREEN_HEIGHT;
     }
-  //  public void paint(Graphics g) {
-  //      image = createImage(getWidth(), getHeight());
-  //      graphics = image.getGraphics();
-  //      draw(graphics);
-  //      g.drawImage(image, 0, 0, this);
-  //  }
     public void draw(Graphics g) {
         g.setColor(Color.white);
         g.setFont(new Font("Consolas", Font.PLAIN,40));
         String begWords = "Welcome to";
         String begWords2 = "Duck Duck Buffalo";
-        String begWords3 = "Press ENTER to Start Game";
+        String begWords3 = "Press ENTER";
         g.drawString(begWords, 410, 230);
         g.setFont(new Font("Consolas", Font.PLAIN,60));
         g.drawString(begWords2, 233, 300);
         g.setFont(new Font("Consolas", Font.PLAIN,40));
-        g.drawString(begWords3, 237, 400);
+        g.drawString(begWords3, 400, 400);
         try {
             pic2 = ImageIO.read(new File("./data/duck1.png"));
         } catch (IOException e) {
@@ -50,8 +38,6 @@ public class WelcomeScreen extends Rectangle{
         } catch (IOException e) {
         }
         g.drawImage(pic3, 835, 305, null);
-
-
     }
     public void draw2(Graphics g) {
         g.setColor(Color.darkGray);
