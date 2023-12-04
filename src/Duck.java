@@ -10,22 +10,22 @@ import javax.swing.*;
 import java.awt.Graphics2D;
 
 public class Duck extends Rectangle {
-    Random random = new Random();
+    Random random;
     BufferedImage pic1;
     double xVelocity;
     double yVelocity;
-    double initialSpeed = 1;
+    double initialSpeed = 1.5;
 
     Duck(int x, int y, int width, int height){
         super(x, y, width, height);
         random = new Random();
-        double randomXDirection = random.nextDouble(2);
+        double randomXDirection = random.nextDouble(3);
         if(randomXDirection == 0) {
             randomXDirection++;
         }
         setXDirection(randomXDirection*initialSpeed);
 
-        double randomYDirection = random.nextDouble(2);
+        double randomYDirection = random.nextDouble(3);
         if(randomYDirection == 0) {
             randomYDirection++;
         }

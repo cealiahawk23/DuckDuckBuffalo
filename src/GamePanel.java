@@ -26,16 +26,15 @@ public class GamePanel extends JPanel implements Runnable{
     Graphics graphics;
     Random random;
     Box box;
+    WelcomeScreen welcomeScreen;
     Paddle paddle;
     Duck duck;
-    //Duck[] Ducks = new Duck[10];
     ArrayList<Duck> Ducks = new ArrayList<Duck>();
     Score score;
+    boolean gameStart = false;
     GamePanel() {
+        welcomeScreen = new WelcomeScreen(SCREEN_WIDTH, SCREEN_HEIGHT);
         newPaddle();
-        //makeDucks();
-        addDucksToArray();
-
         box = new Box(GAME_WIDTH, GAME_HEIGHT);
         score = new Score(GAME_WIDTH, GAME_HEIGHT);
         this.setFocusable(true);
@@ -47,18 +46,10 @@ public class GamePanel extends JPanel implements Runnable{
     public void newPaddle() {
         paddle = new Paddle((GAME_WIDTH/2)-(PADDLE_WIDTH/2), (GAME_HEIGHT-PADDLE_HEIGHT-BOX_SIDE_LP), PADDLE_WIDTH, PADDLE_HEIGHT);
     }
-  //  public void makeDucks() {
-  //      random = new Random();
-  //      for(int i = 0; i < 10; i++){
-  //          duck = new Duck((BOX_SIDE_R-DUCK_DIAMETER + random.nextInt()), (BOX_TOP + random.nextInt()), DUCK_DIAMETER, DUCK_DIAMETER);
-  //          this.Ducks = duck;
-  //      }
-  //  }
     public void addDucksToArray() {
         random = new Random();
-        duck = new Duck(((BOX_SIDE_R+random.nextInt(2))-DUCK_DIAMETER + random.nextInt(2)), (BOX_TOP + random.nextInt(2)), DUCK_DIAMETER, DUCK_DIAMETER);
+        duck = new Duck((BOX_SIDE_R-DUCK_DIAMETER + random.nextInt(2)), (BOX_TOP+DUCK_DIAMETER), DUCK_DIAMETER, DUCK_DIAMETER);
         Ducks.add(duck);
-
     }
 
     public void paint(Graphics g) {
@@ -69,49 +60,63 @@ public class GamePanel extends JPanel implements Runnable{
 
     }
     public void draw(Graphics g) {
-        box.draw(g);
-        score.draw(g);
-        paddle.draw(g);
-        duck.draw(g);
-        for (Duck d: this.Ducks)
-        {
-            d.draw(g);
+        if (gameStart == false) {
+            welcomeScreen.draw2(g);
+            welcomeScreen.draw(g);
         }
-       // for (Duck d: this.Ducks2)
-       // {
-       //     d.draw(g);
-       // }
+        else {
+            box.draw(g);
+            score.draw(g);
+            paddle.draw(g);
+            for (Duck duck : this.Ducks) {
+                duck.draw(g);
+            }
+            g.drawString(String.valueOf(Ducks.size()), (GAME_WIDTH - 160), 50);
+        }
     }
     public void move() {
         paddle.move();
-        duck.move();
-        for (Duck d: this.Ducks)
+        for (Duck duck: this.Ducks)
         {
-            d.move();
+            duck.move();
         }
-       // for (Duck d: this.Ducks2)
-       // {
-       //     d.move();
-       // }
     }
     public void checkCollision(Duck duck) {
         //stops duck from leaving top of screen
-        if (duck.y <= 40) {
-            duck.setYDirection(-duck.yVelocity);
+        if (duck.y <= BOX_TOP) {
+//            duck.yVelocity = (Math.abs(duck.yVelocity)+1);
+//            duck.setYDirection(+duck.yVelocity);
+            duck.yVelocity *= -1;
+            duck.y = BOX_TOP;
+        }
+        //removes duck from array if they leave bottom of screen
+        if (duck.y >= 900) {
+           //Ducks.remove(duck);
         }
         //stops duck from leaving sides of screen
-        if (duck.x <= 60) {
-            duck.setXDirection(-duck.xVelocity);
+        if (duck.x <= BOX_SIDE_L) {
+//            duck.setXDirection(-duck.xVelocity);
+            duck.xVelocity *= -1;
+            duck.x = BOX_SIDE_L;
         }
         if (duck.x >= (GAME_WIDTH - 60) - DUCK_DIAMETER) {
-            duck.setXDirection(-duck.xVelocity);
+//            duck.setXDirection(-duck.xVelocity);
+            duck.xVelocity *= -1;
+            duck.x = (GAME_WIDTH - 60) - DUCK_DIAMETER;
+        }
+        //prevents ducks from getting stuck
+        if ((duck.yVelocity == 0) && (duck.xVelocity == 0)) {
+            duck.setYDirection(duck.yVelocity=2.5);
+            duck.setXDirection(duck.xVelocity=2.5);
+            //duck.setXDirection(duck.xVelocity+random.nextDouble(2));
         }
         //bounces duck off paddle
         if (duck.intersects(paddle)) {
-            duck.yVelocity = Math.abs(duck.yVelocity);
-            duck.yVelocity--; //makes duck bounce off paddle
+//            duck.yVelocity = Math.abs(duck.yVelocity);
+//            duck.yVelocity--; //makes duck bounce off paddle
+            duck.yVelocity *= -1;
               if(duck.xVelocity>0) {
-                //  duck.xVelocity++;//makes duck faster bouncing off paddle
+                  duck.xVelocity++;//makes duck faster bouncing off paddle
               }
               else {
                   duck.xVelocity--;
@@ -143,15 +148,10 @@ public class GamePanel extends JPanel implements Runnable{
                 {
                     checkCollision(duck);
                 }
-               // for (Duck duck: this.Ducks2)
-               // {
-               //     checkCollision(duck);
-               // }
                 repaint();
                 delta--;
             }
         }
-
     }
     public class AL extends KeyAdapter{
         @Override
@@ -160,20 +160,21 @@ public class GamePanel extends JPanel implements Runnable{
             keyTyped(e);
         }
         @Override
-        public void keyReleased(KeyEvent e) { paddle.keyReleased(e); }
-  //      public void keyTyped(KeyEvent e) {
-  //          duck.keyTyped(e); }
+        public void keyReleased(KeyEvent e) {
+            paddle.keyReleased(e);
+        }
         public void keyTyped(KeyEvent e) {
             boolean shouldRelease = false;
-            if ((e.getKeyCode() == KeyEvent.VK_SPACE)) {
+            if (((e.getKeyCode() == KeyEvent.VK_SPACE) && (gameStart == true))) {
                  shouldRelease = true;
                  addDucksToArray();
                  System.out.println("Duck released " + shouldRelease);
-          }
-      }
+            }
+            else if(e.getKeyCode() == KeyEvent.VK_ENTER) {
+                gameStart = true;
+            }
+        }
     }
-
-
 }
 
 

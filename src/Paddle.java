@@ -1,13 +1,10 @@
 import java.awt.*;
 import java.awt.event.*;
-
 public class Paddle extends Rectangle{
-    int id;
     int xVelocity;
     int speed = 10;
     Paddle(int x, int y, int PADDLE_WIDTH, int PADDLE_HEIGHT){
         super(x, y, PADDLE_WIDTH, PADDLE_HEIGHT);
-        this.id = id;
     }
     public void keyPressed(KeyEvent e) {
 
