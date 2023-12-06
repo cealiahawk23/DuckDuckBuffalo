@@ -1,9 +1,14 @@
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.*;
+import java.io.File;
+import java.io.IOException;
 import java.util.*;
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.ListIterator;
 
 public class GamePanel extends JPanel implements Runnable{
     static final int SCREEN_WIDTH = 1500;
@@ -21,6 +26,8 @@ public class GamePanel extends JPanel implements Runnable{
     static final int BOX_SIDE_R = (GAME_WIDTH-100);
     static final int BOX_SIDE_L = 60;
     static final int BOX_SIDE_LP = 60;
+    boolean timesUp = false;
+    GameOver gameOver;
     Thread gameThread;
     Image image;
     Graphics graphics;
@@ -29,14 +36,18 @@ public class GamePanel extends JPanel implements Runnable{
     WelcomeScreen welcomeScreen;
     Paddle paddle;
     Duck duck;
+    Duck duckGoodbye;
     ArrayList<Duck> Ducks = new ArrayList<Duck>();
     Score score;
     boolean gameStart = false;
+    boolean gameStart2 = false;
+    boolean duckPlus = true;
     GamePanel() {
         welcomeScreen = new WelcomeScreen(SCREEN_WIDTH, SCREEN_HEIGHT);
         newPaddle();
         box = new Box(GAME_WIDTH, GAME_HEIGHT);
         score = new Score(GAME_WIDTH, GAME_HEIGHT);
+       // gameOver = new GameOver(SCREEN_WIDTH, SCREEN_HEIGHT);
         this.setFocusable(true);
         this.addKeyListener(new AL());
         this.setPreferredSize(GAME_SIZE);
@@ -48,10 +59,9 @@ public class GamePanel extends JPanel implements Runnable{
     }
     public void addDucksToArray() {
         random = new Random();
-        duck = new Duck((BOX_SIDE_R-DUCK_DIAMETER + random.nextInt(2)), (BOX_TOP+DUCK_DIAMETER), DUCK_DIAMETER, DUCK_DIAMETER);
+        duck = new Duck((BOX_SIDE_R - DUCK_DIAMETER + random.nextInt(2)), (BOX_TOP + DUCK_DIAMETER), DUCK_DIAMETER, DUCK_DIAMETER);
         Ducks.add(duck);
     }
-
     public void paint(Graphics g) {
         image = createImage(getWidth(), getHeight());
         graphics = image.getGraphics();
@@ -65,13 +75,20 @@ public class GamePanel extends JPanel implements Runnable{
             welcomeScreen.draw(g);
         }
         else {
-            box.draw(g);
-            score.draw(g);
-            paddle.draw(g);
-            for (Duck duck : this.Ducks) {
-                duck.draw(g);
+            if (gameStart2 == false) {
+                welcomeScreen.draw4(g);
+                box.draw(g);
+                welcomeScreen.draw3(g);
             }
-            g.drawString(String.valueOf(Ducks.size()), (GAME_WIDTH - 160), 50);
+            else {
+                box.draw(g);
+                score.draw(g);
+                paddle.draw(g);
+                for (Duck duck : this.Ducks) {
+                    duck.draw(g);
+                }
+                g.drawString(String.valueOf(Ducks.size()), (GAME_WIDTH - 160), 50);
+            }
         }
     }
     public void move() {
@@ -82,16 +99,23 @@ public class GamePanel extends JPanel implements Runnable{
         }
     }
     public void checkCollision(Duck duck) {
+        //removes duck from array if they leave bottom of screen
+        if (duck.y >= 1000) {
+            int place = Ducks.indexOf(duck);
+            System.out.println(place);
+           // Ducks.remove(duck);
+           // Iterator<Duck> iterator = Ducks.iterator();
+           // while (iterator.hasNext()) {
+           //     iterator.next();
+           // }
+           // iterator.remove();
+        }
         //stops duck from leaving top of screen
         if (duck.y <= BOX_TOP) {
 //            duck.yVelocity = (Math.abs(duck.yVelocity)+1);
 //            duck.setYDirection(+duck.yVelocity);
             duck.yVelocity *= -1;
-            duck.y = BOX_TOP;
-        }
-        //removes duck from array if they leave bottom of screen
-        if (duck.y >= 900) {
-           //Ducks.remove(duck);
+            duck.y = BOX_TOP+1;
         }
         //stops duck from leaving sides of screen
         if (duck.x <= BOX_SIDE_L) {
@@ -105,9 +129,8 @@ public class GamePanel extends JPanel implements Runnable{
             duck.x = (GAME_WIDTH - 60) - DUCK_DIAMETER;
         }
         //prevents ducks from getting stuck
-        if ((duck.yVelocity == 0) && (duck.xVelocity == 0)) {
-            duck.setYDirection(duck.yVelocity=2.5);
-            duck.setXDirection(duck.xVelocity=2.5);
+        if (duck.yVelocity == 0) {
+            duck.yVelocity *= -1;
             //duck.setXDirection(duck.xVelocity+random.nextDouble(2));
         }
         //bounces duck off paddle
@@ -140,12 +163,11 @@ public class GamePanel extends JPanel implements Runnable{
         double delta = 0;
         while(true) {
             long now = System.nanoTime();
-            delta += (now -lastTime)/ns;
+            delta += (now - lastTime) / ns;
             lastTime = now;
-            if(delta >= 1) {
+            if (delta >= 1) {
                 move();
-                for (Duck duck: this.Ducks)
-                {
+                for (Duck duck: this.Ducks) {
                     checkCollision(duck);
                 }
                 repaint();
@@ -169,6 +191,9 @@ public class GamePanel extends JPanel implements Runnable{
                  shouldRelease = true;
                  addDucksToArray();
                  System.out.println("Duck released " + shouldRelease);
+            }
+            else if((e.getKeyCode() == KeyEvent.VK_ENTER) && (gameStart == true)) {
+                gameStart2 = true;
             }
             else if(e.getKeyCode() == KeyEvent.VK_ENTER) {
                 gameStart = true;

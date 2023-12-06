@@ -15,7 +15,7 @@ public class Duck extends Rectangle {
     Duck(int x, int y, int width, int height){
         super(x, y, width, height);
         random = new Random();
-        double randomXDirection = random.nextDouble(3);
+        double randomXDirection = random.nextDouble(2);
         if(randomXDirection == 0) {
             randomXDirection++;
         }
